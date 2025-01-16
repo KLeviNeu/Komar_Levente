@@ -9,5 +9,5 @@ except:
 
 if reply.status_code == 200:
 	print(reply.json())
-else
+else:
 	print(reply.status_code)
