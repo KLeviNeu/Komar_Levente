@@ -1,6 +1,6 @@
-import requests
+import requests, json
 
-url= ""
+url= "https://"
 a = ("admin", "admin")
 h = {"Accept":"application/yang-data+json"} verify = False)
 try:
@@ -11,5 +11,6 @@ except:
 
 if reply.status_code == 200:
 	print(reply.json())
-
+else:
 print(reply.status_code)
+print(reply.text)
