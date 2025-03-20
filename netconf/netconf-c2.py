@@ -1,48 +1,38 @@
-#!/usr/bin/env python3
 from ncclient import manager
 
-# Device connection details
-host = "172.19.255.216"
-username = "admin"
-password = "cisco"
-interface = "GigabitEthernet0/2"
-new_ip = "192.168.1.1"
-new_mask = "255.255.255.0"
+DEVICE = {
+    "host": "172.19.255.216",  # Replace with your device's IP
+    "port": 830,
+    "username": "admin",
+    "password": "cisco",
+    "hostkey_verify": False
+}
 
-# Configuration payload
-config = f"""
-<config>
+INTERFACE_CONFIG = """<config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
   <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
     <interface>
       <GigabitEthernet>
-        <name>{interface.split('/')[-1]}</name>
+        <name>0/2</name>
         <ip>
           <address>
             <primary>
-              <address>{new_ip}</address>
-              <mask>{new_mask}</mask>
+              <address>192.168.2.1</address>
+              <mask>255.255.255.0</mask>
             </primary>
           </address>
         </ip>
       </GigabitEthernet>
     </interface>
   </native>
-</config>
-"""
+</config>"""
 
-try:
-    # Connect to the device via NETCONF
-    with manager.connect(
-        host=host,
-        port=830,
-        username=username,
-        password=password,
-        hostkey_verify=False,
-    ) as m:
-        # Send the configuration change
-        response = m.edit_config(target="running", config=config)
-        print("Configuration applied successfully:")
+def main():
+    with manager.connect(**DEVICE) as m:
+        print("Connected to the device.")
+        response = m.edit_config(target="running", config=INTERFACE_CONFIG)
+        print("Response from the device:")
         print(response)
-except Exception as e:
-    print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    main()
 
